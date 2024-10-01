@@ -12,10 +12,11 @@ import net.minecraft.entity.Entity;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.Text;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Objects;
 
 public class CommandFlying {
 	public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
@@ -78,7 +79,7 @@ public class CommandFlying {
 
 	private static int toggle(CommandContext<ServerCommandSource> source) throws CommandSyntaxException {
 		ServerPlayerEntity serverPlayerEntity = source.getSource().getPlayer();
-		return serverPlayerEntity.getAbilities().allowFlying ? disallow(source, Collections.singleton(serverPlayerEntity)) : allow(source, Collections.singleton(serverPlayerEntity));
+		return Objects.requireNonNull(serverPlayerEntity).getAbilities().allowFlying ? disallow(source, Collections.singleton(serverPlayerEntity)) : allow(source, Collections.singleton(serverPlayerEntity));
 	}
 
 	private static int allow(CommandContext<ServerCommandSource> source, Collection<ServerPlayerEntity> players) {
@@ -88,9 +89,9 @@ public class CommandFlying {
 		});
 
 		if (players.size() == 1) {
-			source.getSource().sendFeedback(new TranslatableText("hamusuke.command.fly.success.allow.single", players.iterator().next().getDisplayName()), true);
+			source.getSource().sendFeedback(() -> Text.translatable("hamusuke.command.fly.success.allow.single", players.iterator().next().getDisplayName()), true);
 		} else {
-			source.getSource().sendFeedback(new TranslatableText("hamusuke.command.fly.success.allow.multiple", players.size()), true);
+			source.getSource().sendFeedback(() -> Text.translatable("hamusuke.command.fly.success.allow.multiple", players.size()), true);
 		}
 
 		return players.size();
@@ -101,13 +102,13 @@ public class CommandFlying {
 			serverPlayerEntity.getAbilities().allowFlying = false;
 			serverPlayerEntity.getAbilities().flying = false;
 			serverPlayerEntity.sendAbilitiesUpdate();
-			((LivingEntityInvoker) serverPlayerEntity).markNoFallDamage(!serverPlayerEntity.isOnGround());
+			((LivingEntityInvoker) serverPlayerEntity).flyCommandMod_Fabric$markNoFallDamage(!serverPlayerEntity.isOnGround());
 		});
 
 		if (players.size() == 1) {
-			source.getSource().sendFeedback(new TranslatableText("hamusuke.command.fly.success.noallow.single", players.iterator().next().getDisplayName()), true);
+			source.getSource().sendFeedback(() -> Text.translatable("hamusuke.command.fly.success.noallow.single", players.iterator().next().getDisplayName()), true);
 		} else {
-			source.getSource().sendFeedback(new TranslatableText("hamusuke.command.fly.success.noallow.multiple", players.size()), true);
+			source.getSource().sendFeedback(() -> Text.translatable("hamusuke.command.fly.success.noallow.multiple", players.size()), true);
 		}
 
 		return players.size();
@@ -117,9 +118,9 @@ public class CommandFlying {
 		players.forEach(serverPlayerEntity -> serverPlayerEntity.setNoGravity(true));
 
 		if (players.size() == 1) {
-			source.getSource().sendFeedback(new TranslatableText("hamusuke.command.fly.success.nogravity.single", players.iterator().next().getDisplayName()), true);
+			source.getSource().sendFeedback(() -> Text.translatable("hamusuke.command.fly.success.nogravity.single", players.iterator().next().getDisplayName()), true);
 		} else {
-			source.getSource().sendFeedback(new TranslatableText("hamusuke.command.fly.success.nogravity.multiple", players.size()), true);
+			source.getSource().sendFeedback(() -> Text.translatable("hamusuke.command.fly.success.nogravity.multiple", players.size()), true);
 		}
 
 		return players.size();
@@ -128,25 +129,25 @@ public class CommandFlying {
 	private static int gravity(CommandContext<ServerCommandSource> source, Collection<ServerPlayerEntity> players) {
 		players.forEach(serverPlayerEntity -> {
 			serverPlayerEntity.setNoGravity(false);
-			((LivingEntityInvoker) serverPlayerEntity).markNoFallDamage(!serverPlayerEntity.isOnGround());
+			((LivingEntityInvoker) serverPlayerEntity).flyCommandMod_Fabric$markNoFallDamage(!serverPlayerEntity.isOnGround());
 		});
 
 		if (players.size() == 1) {
-			source.getSource().sendFeedback(new TranslatableText("hamusuke.command.fly.success.gravity.single", players.iterator().next().getDisplayName()), true);
+			source.getSource().sendFeedback(() -> Text.translatable("hamusuke.command.fly.success.gravity.single", players.iterator().next().getDisplayName()), true);
 		} else {
-			source.getSource().sendFeedback(new TranslatableText("hamusuke.command.fly.success.gravity.multiple", players.size()), true);
+			source.getSource().sendFeedback(() -> Text.translatable("hamusuke.command.fly.success.gravity.multiple", players.size()), true);
 		}
 
 		return players.size();
 	}
 
 	private static int sendFlySpeedToCommandSource(CommandContext<ServerCommandSource> source, Collection<ServerPlayerEntity> players) {
-		players.forEach(serverPlayerEntity -> source.getSource().sendFeedback(new TranslatableText("hamusuke.command.fly.success.getflyspeed", serverPlayerEntity.getDisplayName(), serverPlayerEntity.getAbilities().getFlySpeed()), false));
+		players.forEach(serverPlayerEntity -> source.getSource().sendFeedback(() -> Text.translatable("hamusuke.command.fly.success.getflyspeed", serverPlayerEntity.getDisplayName(), serverPlayerEntity.getAbilities().getFlySpeed()), false));
 		return players.size();
 	}
 
 	private static int sendWalkSpeedToCommandSource(CommandContext<ServerCommandSource> source, Collection<ServerPlayerEntity> players) {
-		players.forEach(serverPlayerEntity -> source.getSource().sendFeedback(new TranslatableText("hamusuke.command.fly.success.getwalkspeed", serverPlayerEntity.getDisplayName(), serverPlayerEntity.getAbilities().getWalkSpeed()), false));
+		players.forEach(serverPlayerEntity -> source.getSource().sendFeedback(() -> Text.translatable("hamusuke.command.fly.success.getwalkspeed", serverPlayerEntity.getDisplayName(), serverPlayerEntity.getAbilities().getWalkSpeed()), false));
 		return players.size();
 	}
 
@@ -157,9 +158,9 @@ public class CommandFlying {
 		});
 
 		if (players.size() == 1) {
-			source.getSource().sendFeedback(new TranslatableText("hamusuke.command.fly.success.setflyspeed.single", players.iterator().next().getDisplayName(), flySpeed), true);
+			source.getSource().sendFeedback(() -> Text.translatable("hamusuke.command.fly.success.setflyspeed.single", players.iterator().next().getDisplayName(), flySpeed), true);
 		} else {
-			source.getSource().sendFeedback(new TranslatableText("hamusuke.command.fly.success.setflyspeed.multiple", players.size(), flySpeed), true);
+			source.getSource().sendFeedback(() -> Text.translatable("hamusuke.command.fly.success.setflyspeed.multiple", players.size(), flySpeed), true);
 		}
 
 		return players.size();
@@ -172,9 +173,9 @@ public class CommandFlying {
 		});
 
 		if (players.size() == 1) {
-			source.getSource().sendFeedback(new TranslatableText("hamusuke.command.fly.success.setwalkspeed.single", players.iterator().next().getDisplayName(), walkSpeed), true);
+			source.getSource().sendFeedback(() -> Text.translatable("hamusuke.command.fly.success.setwalkspeed.single", players.iterator().next().getDisplayName(), walkSpeed), true);
 		} else {
-			source.getSource().sendFeedback(new TranslatableText("hamusuke.command.fly.success.setwalkspeed.multiple", players.size(), walkSpeed), true);
+			source.getSource().sendFeedback(() -> Text.translatable("hamusuke.command.fly.success.setwalkspeed.multiple", players.size(), walkSpeed), true);
 		}
 
 		return players.size();
@@ -187,9 +188,9 @@ public class CommandFlying {
 		});
 
 		if (players.size() == 1) {
-			source.getSource().sendFeedback(new TranslatableText("hamusuke.command.fly.success.allowedit." + flag + ".single", players.iterator().next().getDisplayName()), true);
+			source.getSource().sendFeedback(() -> Text.translatable("hamusuke.command.fly.success.allowedit." + flag + ".single", players.iterator().next().getDisplayName()), true);
 		} else {
-			source.getSource().sendFeedback(new TranslatableText("hamusuke.command.fly.success.allowedit." + flag + ".multiple", players.size()), true);
+			source.getSource().sendFeedback(() -> Text.translatable("hamusuke.command.fly.success.allowedit." + flag + ".multiple", players.size()), true);
 		}
 
 		return players.size();
@@ -202,9 +203,9 @@ public class CommandFlying {
 		});
 
 		if (players.size() == 1) {
-			source.getSource().sendFeedback(new TranslatableText("hamusuke.command.fly.success.disabledamage." + flag + ".single", players.iterator().next().getDisplayName()), true);
+			source.getSource().sendFeedback(() -> Text.translatable("hamusuke.command.fly.success.disabledamage." + flag + ".single", players.iterator().next().getDisplayName()), true);
 		} else {
-			source.getSource().sendFeedback(new TranslatableText("hamusuke.command.fly.success.disabledamage." + flag + ".multiple", players.size()), true);
+			source.getSource().sendFeedback(() -> Text.translatable("hamusuke.command.fly.success.disabledamage." + flag + ".multiple", players.size()), true);
 		}
 
 		return players.size();
@@ -217,9 +218,9 @@ public class CommandFlying {
 		});
 
 		if (players.size() == 1) {
-			source.getSource().sendFeedback(new TranslatableText("hamusuke.command.fly.success.isflying." + flag + ".single", players.iterator().next().getDisplayName()), true);
+			source.getSource().sendFeedback(() -> Text.translatable("hamusuke.command.fly.success.isflying." + flag + ".single", players.iterator().next().getDisplayName()), true);
 		} else {
-			source.getSource().sendFeedback(new TranslatableText("hamusuke.command.fly.success.isflying." + flag + ".multiple", players.size()), true);
+			source.getSource().sendFeedback(() -> Text.translatable("hamusuke.command.fly.success.isflying." + flag + ".multiple", players.size()), true);
 		}
 
 		return players.size();
@@ -229,9 +230,9 @@ public class CommandFlying {
 		players.forEach(serverPlayerEntity -> serverPlayerEntity.setGlowing(flag));
 
 		if (players.size() == 1) {
-			source.getSource().sendFeedback(new TranslatableText("hamusuke.command.fly.success.setglowing." + flag + ".single", players.iterator().next().getDisplayName()), true);
+			source.getSource().sendFeedback(() -> Text.translatable("hamusuke.command.fly.success.setglowing." + flag + ".single", players.iterator().next().getDisplayName()), true);
 		} else {
-			source.getSource().sendFeedback(new TranslatableText("hamusuke.command.fly.success.setglowing." + flag + ".multiple", players.size()), true);
+			source.getSource().sendFeedback(() -> Text.translatable("hamusuke.command.fly.success.setglowing." + flag + ".multiple", players.size()), true);
 		}
 
 		return players.size();
@@ -241,9 +242,9 @@ public class CommandFlying {
 		players.forEach(serverPlayerEntity -> serverPlayerEntity.setInvulnerable(flag));
 
 		if (players.size() == 1) {
-			source.getSource().sendFeedback(new TranslatableText("hamusuke.command.fly.success.setinvulnerable." + flag + ".single", players.iterator().next().getDisplayName()), true);
+			source.getSource().sendFeedback(() -> Text.translatable("hamusuke.command.fly.success.setinvulnerable." + flag + ".single", players.iterator().next().getDisplayName()), true);
 		} else {
-			source.getSource().sendFeedback(new TranslatableText("hamusuke.command.fly.success.setinvulnerable." + flag + ".multiple", players.size()), true);
+			source.getSource().sendFeedback(() -> Text.translatable("hamusuke.command.fly.success.setinvulnerable." + flag + ".multiple", players.size()), true);
 		}
 
 		return players.size();
@@ -253,9 +254,9 @@ public class CommandFlying {
 		players.forEach(serverPlayerEntity -> serverPlayerEntity.setInvisible(flag));
 
 		if (players.size() == 1) {
-			source.getSource().sendFeedback(new TranslatableText("hamusuke.command.fly.success.invisible." + flag + ".single", players.iterator().next().getDisplayName()), true);
+			source.getSource().sendFeedback(() -> Text.translatable("hamusuke.command.fly.success.invisible." + flag + ".single", players.iterator().next().getDisplayName()), true);
 		} else {
-			source.getSource().sendFeedback(new TranslatableText("hamusuke.command.fly.success.invisible." + flag + ".multiple", players.size()), true);
+			source.getSource().sendFeedback(() -> Text.translatable("hamusuke.command.fly.success.invisible." + flag + ".multiple", players.size()), true);
 		}
 
 		return players.size();

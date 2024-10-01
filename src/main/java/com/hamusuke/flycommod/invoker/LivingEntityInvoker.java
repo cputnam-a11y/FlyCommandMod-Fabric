@@ -1,7 +1,8 @@
 package com.hamusuke.flycommod.invoker;
 
 public interface LivingEntityInvoker {
-    void markNoFallDamage(boolean flag);
+    void flyCommandMod_Fabric$markNoFallDamage(boolean flag);
 
-    boolean isNoFallDamageMarked();
+    @SuppressWarnings("unused")
+    boolean flyCommandMod_Fabric$isNoFallDamageMarked();
 }

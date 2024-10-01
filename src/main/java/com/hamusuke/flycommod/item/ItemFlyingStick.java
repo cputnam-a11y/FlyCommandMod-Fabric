@@ -1,30 +1,28 @@
 package com.hamusuke.flycommod.item;
 
 import com.hamusuke.flycommod.invoker.LivingEntityInvoker;
-import net.minecraft.client.item.TooltipContext;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Rarity;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 public class ItemFlyingStick extends Item {
 	public ItemFlyingStick() {
-		super(new Item.Settings().group(ItemGroup.TOOLS).maxCount(1));
+		super(new Item.Settings().maxCount(1).rarity(Rarity.EPIC).component(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true));
 	}
 
 	@Override
-	public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
-		tooltip.add(new TranslatableText(this.getTranslationKey() + ".desc"));
-		super.appendTooltip(stack, world, tooltip, context);
+	public void appendTooltip(ItemStack stack, TooltipContext context, List<Text> tooltip, TooltipType type) {
+		tooltip.add(Text.translatable(this.getTranslationKey() + ".desc"));
+		super.appendTooltip(stack, context, tooltip, type);
 	}
 
 	@Override
@@ -37,18 +35,9 @@ public class ItemFlyingStick extends Item {
 			playerIn.getAbilities().allowFlying = false;
 			playerIn.getAbilities().flying = false;
 			playerIn.sendAbilitiesUpdate();
-			((LivingEntityInvoker) playerIn).markNoFallDamage(!playerIn.isOnGround());
+			((LivingEntityInvoker) playerIn).flyCommandMod_Fabric$markNoFallDamage(!playerIn.isOnGround());
 		}
 		return TypedActionResult.success(item);
 	}
 
-	@Override
-	public Rarity getRarity(ItemStack stack) {
-		return Rarity.EPIC;
-	}
-
-	@Override
-	public boolean hasGlint(ItemStack stack) {
-		return true;
-	}
 }

@@ -8,7 +8,7 @@ import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.Text;
 
 import java.util.Collection;
 
@@ -43,14 +43,14 @@ public class CommandEntityAbilities {
 		entities.forEach(entity -> {
 			entity.setNoGravity(flag);
 			if (!flag && entity instanceof LivingEntityInvoker invoker) {
-				invoker.markNoFallDamage(!entity.isOnGround());
+				invoker.flyCommandMod_Fabric$markNoFallDamage(!entity.isOnGround());
 			}
 		});
 
 		if (entities.size() == 1) {
-			source.sendFeedback(new TranslatableText("hamusuke.command.entityabilities.success.nogravity." + flag + ".single", entities.iterator().next().getDisplayName()), true);
+			source.sendFeedback(() -> Text.translatable("hamusuke.command.entityabilities.success.nogravity." + flag + ".single", entities.iterator().next().getDisplayName()), true);
 		} else {
-			source.sendFeedback(new TranslatableText("hamusuke.command.entityabilities.success.nogravity." + flag + ".multiple", entities.size()), true);
+			source.sendFeedback(() -> Text.translatable("hamusuke.command.entityabilities.success.nogravity." + flag + ".multiple", entities.size()), true);
 		}
 
 		return entities.size();
@@ -60,9 +60,9 @@ public class CommandEntityAbilities {
 		entities.forEach(entity -> entity.setGlowing(flag));
 
 		if (entities.size() == 1) {
-			source.sendFeedback(new TranslatableText("hamusuke.command.entityabilities.success.setglowing." + flag + ".single", entities.iterator().next().getDisplayName()), true);
+			source.sendFeedback(() -> Text.translatable("hamusuke.command.entityabilities.success.setglowing." + flag + ".single", entities.iterator().next().getDisplayName()), true);
 		} else {
-			source.sendFeedback(new TranslatableText("hamusuke.command.entityabilities.success.setglowing." + flag + ".multiple", entities.size()), true);
+			source.sendFeedback(() -> Text.translatable("hamusuke.command.entityabilities.success.setglowing." + flag + ".multiple", entities.size()), true);
 		}
 
 		return entities.size();
@@ -72,9 +72,9 @@ public class CommandEntityAbilities {
 		entities.forEach(entity -> entity.setInvulnerable(flag));
 
 		if (entities.size() == 1) {
-			source.sendFeedback(new TranslatableText("hamusuke.command.entityabilities.success.setinvulnerable." + flag + ".single", entities.iterator().next().getDisplayName()), true);
+			source.sendFeedback(() -> Text.translatable("hamusuke.command.entityabilities.success.setinvulnerable." + flag + ".single", entities.iterator().next().getDisplayName()), true);
 		} else {
-			source.sendFeedback(new TranslatableText("hamusuke.command.entityabilities.success.setinvulnerable." + flag + ".multiple", entities.size()), true);
+			source.sendFeedback(() -> Text.translatable("hamusuke.command.entityabilities.success.setinvulnerable." + flag + ".multiple", entities.size()), true);
 		}
 
 		return entities.size();
@@ -84,9 +84,9 @@ public class CommandEntityAbilities {
 		entities.forEach(entity -> entity.setInvisible(flag));
 
 		if (entities.size() == 1) {
-			source.sendFeedback(new TranslatableText("hamusuke.command.entityabilities.success.invisible." + flag + ".single", entities.iterator().next().getDisplayName()), true);
+			source.sendFeedback(() -> Text.translatable("hamusuke.command.entityabilities.success.invisible." + flag + ".single", entities.iterator().next().getDisplayName()), true);
 		} else {
-			source.sendFeedback(new TranslatableText("hamusuke.command.entityabilities.success.invisible." + flag + ".multiple", entities.size()), true);
+			source.sendFeedback(() -> Text.translatable("hamusuke.command.entityabilities.success.invisible." + flag + ".multiple", entities.size()), true);
 		}
 
 		return entities.size();
